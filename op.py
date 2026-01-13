@@ -1,83 +1,145 @@
-#<=================Library Management System ================>
 import getpass
-Books = []
-class Library:
-    def __init__(self):
-        self.title = input("Enter the book title: ")
-        self.author = input("Enter the book author: ")
-        self.ISBN = int(input("Enter the book ISBN: "))
-        self.genre = input("Enter the book genre: ")
 
-    def detailsBook(self):
-        print(f"Book details: {self.title}, {self.author}, {self.ISBN}, {self.genre}") 
-   
-
-
-class removeBook(Library):
-    def remove(self):
-        print("Enter the book name you want to remove")
-        book_name = input("Enter the book name: ")
-        for book in Books:
-            if book.title == book_name: 
-             Books.remove(book)
-             print("Book has sucessfully removed")
-            else:
-             print("book is not found")
-class borrowBook(Library):
-    def borrow(self):
-        print("Enter the book name you want to borrow")
-        book_name = input("Enter the book name: ")
-        if book_name == self.title:
-            print("Book has been borrowed successfully")
-        else:
-            print("Book not found in the library")
-class returnBook(Library):
-    def returBook(self):
-        print("Enter the book name you want to return")
-        book_name = input("Enter the book name: ")
-        if book_name == self.title:
-            print("Book has been returned successfully")
-        else:
-            print("Book not found in the library")
+Books = {}  
+borrowed_books = []
+class addBook:
+    def adbook(self):
+        title = input("Enter book title: ")
+        author = input("Enter book author: ")
+        ISBN = int(input("Enter book ISBN: "))
+        genre = input("Enter book genre: ")
+        if title in Books:
+            print("Book already exist")
+            return
+        Books[title] = {
+            "author": author,
+            "ISBN": ISBN,
+            "genre": genre,
+            "is_borrowed": False
+        }
+        print("Book added")
         
+
+
+class removeBook(addBook):
+    def remove(self):
+        book_name = input("Enter book you want to remove ")
+        if book_name in Books:
+            del Books[book_name]
+            print("Book is removed")
+        else:
+            print("Book is not found")
+
+
+class BorrowBook:
+    def borrowBook(self):
+        book_name = input("Enter book title name: ")
+        if book_name in Books:
+            if Books[book_name]["is_borrowed"]:
+                print("It is borrowed ")
+            else:
+                Books[book_name]["is_borrowed"] = True
+                borrowed_books.append(book_name)
+                print("Borrowed.")
+        else:
+            print("not found")
+
+
+class returnBook:
+    def returBook(self):
+        title = input("Enter book title  name you want to return: ")
+        if title  in borrowed_books:
+            borrowed_books.remove(title)
+            Books[title]["is_borrowed"] = False
+            print("Book has been returned ")
+        else:
+            print("You have not borrowed book")
+
+
 class Login:
     def signin(self):
-        self.user = input("Please enter your username: ")
+        self.user = input("Please enter username: ")     
         self.password = getpass.getpass(prompt='Password: ')
-        print("Login successful! ")
-class Display: 
+        print("Login successful")
+
+
+class Display:
     def displaybook(self):
-     for book in Books:
-        return book 
+        if not Books:
+            print("No books in the library.")
+        else:
+            print("Books in the library:")
+            for title in Books:
+                print(title)
 
 
+
+class searchBooks:
+    def LinearSearch(self, Books):
+        book_name = input("Enter the book name to search: ")
+
+        index = 0
+        for title in Books:
+            if title == book_name:
+                print(f" book  is available at index", index )
+                return
+            index += 1
+
+        print(" is not found.")
+    def searchbyISBN(self):
+      isbn = input("search book by ISBN")
+    for title in Books: 
+         if Books[title]["ISBN"] == isbn: 
+             print()
+
+    
+    
+            
 if __name__ == "__main__":
     while True: 
-        print("\nWelcome To Library Management System")
+        print("===== Welcome To Library Management System =====")
         print("0. Please login")
-        print("1. Add a book")
-        print("2. Remove a book")
-        print("3. Return a book")
-        print("4. Display all the books")
-        print("5. Exit")
+        print("1. Add book")
+        print("2. Remove  book")
+        print("3. Borrow  book")
+        print("4. Return abook")
+        print("5. Search  book")
+        print("6. Display all the books")
+        print("7. Exit")
 
-        ch = input("Enter your choice: ")
-        if ch =='0': 
-         user_login = Login()
-         user_login.signin()
+        char = input("Enter your choice: ")
+        
+        if char == '0': 
+            user_login = Login()
+            user_login.signin()
 
-        elif ch == '1':
-            new_book = Library()       
-            new_book.detailsBook() 
-            Books.append(new_book)
-        elif ch == '2':    
-            remove_book = removeBook()
-            remove_book.remove()
-        elif ch == '3':
-            return_book = returnBook()
-            return_book.returBook()
-        elif ch == '5':
-            print("Exiting system")
+        elif char == '1':
+            adder = addBook()
+            adder.adbook()
+
+        elif char == '2':    
+            remover = removeBook()
+            remover.remove()
+
+        elif char == '3':
+            borrower = BorrowBook()
+            borrower.borrowBook()
+
+        elif char == '4':
+            ret = returnBook()
+            ret.returBook()
+
+        elif char == '5':
+            searcher = searchBooks()
+            searcher.LinearSearch(Books)
+
+        elif char == '6': 
+            dis = Display()
+            dis.displaybook()
+
+        elif char == '7':
+            print("Exiting system.")
             break
+
         else:
-            print("Choose correct option .")
+            print("Choose a correct option.")
